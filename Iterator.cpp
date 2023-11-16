@@ -22,11 +22,11 @@ int main() {
     for (rii=SS.rbegin(); rii != SS.rend(); ++rii) { cout << *rii << endl; }
 
     cout << endl << "Sample Output:" << endl;
-    cout << SS.size() << endl;
+    cout << "Size: " << SS.size() << endl;
     cout << SS[2] << endl;
     swap(SS[0], SS[2]);
     cout << SS[2] << endl;
 
     return 0;
-    
+
 }
