@@ -18,5 +18,5 @@ int main(){
 
     cout << v.size();
     return(0);
-    
+
 } 
