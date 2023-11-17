@@ -8,8 +8,8 @@ mutex mux;
 
 int main(){ 
     
-    thread Th1 { Funz1 };
-    thread Th2 { Funz2 };
+    thread Th1 { Funz1() };
+    thread Th2 { Funz2() };
 
     Th1.join();
     Th2.join();
