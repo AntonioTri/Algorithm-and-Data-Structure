@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-using namespace std;
 #define LENGHT 19
+using namespace std;
 
 class QuickSort {
 
