@@ -133,7 +133,5 @@ int main(){
     blocco1->mostraTransazioni();
     blocco2->mostraTransazioni();
 
-
-
     return 0;
 }
