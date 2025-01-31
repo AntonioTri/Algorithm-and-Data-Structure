@@ -233,7 +233,7 @@ TEMPLATE void ABR<T>::deleteNode(Node<T>* nodeToDelete){
     // I primi due casi sono semplici, se uno dei figli e' nullo, allora si trapianta
     // al nodo da cancellare, l'altro suo figlio
     if (nodeToDelete->getLeftChild() == nullptr) { 
-        this->transplant(nodeToDelete, nodeToDelete->rightChild()); 
+        this->transplant(nodeToDelete, nodeToDelete->getRightChild()); 
         delete nodeToDelete;
     }
     else if (nodeToDelete->getRightChild() == nullptr) { 
@@ -271,7 +271,7 @@ TEMPLATE void ABR<T>::deleteNode(Node<T>* nodeToDelete){
 
         this->transplant(nodeToDelete, successor);  // Sostituiamo z con y
         successor->setLeftChild(nodeToDelete->getLeftChild());
-        successor->getLeftChild()->setParent(successor);
+        successor->getLeftChild()->setFather(successor);
 
         delete nodeToDelete;
 
@@ -290,13 +290,6 @@ TEMPLATE void ABR<T>::inOrderTraversal(Node<T>* root) {
         this->inOrderTraversal(root->getRightChild());
     }
 }
-
-
-
-
-
-
-
 
 
 #endif // ABR_H

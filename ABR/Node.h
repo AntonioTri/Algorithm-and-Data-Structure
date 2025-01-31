@@ -50,7 +50,7 @@ Node<T>::Node(T key){
 
 template <typename T>
 void Node<T>::setKey(T key){
-    this.key = key;
+    this->key = key;
 };
 
 template <typename T>
