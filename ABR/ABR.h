@@ -44,6 +44,8 @@ template <typename T> ABR<T>::ABR(Node<T>* root){
 };
 
 template <typename T> ABR<T>::ABR(std::vector<T> data){
+    // Viene segnata la radice come nullptr per l'inizializzazione
+    this->root = nullptr;
     // Per ogni elemento nel vettore viene creato un nuovo nodo ed inserito nell'albero
     for (int i = 0; i < data.size(); i++){
         // Creazione del nodo
