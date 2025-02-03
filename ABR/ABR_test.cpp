@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "ABR.h"
+#include "ABR.hpp"
+#include "Node.hpp"
 
 // Test dell'albero binario di ricerca
 int main() {
@@ -9,7 +10,7 @@ int main() {
     std::vector<int> numbers = {1, 2, 3, 4, 5, 6, 7, 87, 8, 9, 96, 3, 2, 5, 325, 46, 57, 247, 25};
 
     // Dichiarazione dell'albero
-    ABR<int> albero(numbers);
+    ABR<int, Node<int>> albero(numbers);
 
     // Esecuzione dei metodi
     // albero.inOrderTraversal(albero.getRoot());
