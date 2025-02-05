@@ -48,7 +48,7 @@ TEMPLATE void ABRRB<T, NodeType>::insertNode(Node<T>* nodeToInsert) {
 
     nodeToInsert->setFather(follower);
 
-    if      (follower == nullptr){} 
+    if      (follower == nullptr){this->setRoot(nodeToInsert);} 
     else if (nodeToInsert->getKey() < follower->getKey()){ follower->setLeftChild(nodeToInsert);}
     else if (nodeToInsert->getKey() >= follower->getKey()) { follower->setRightChild(nodeToInsert);}
     
