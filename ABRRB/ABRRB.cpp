@@ -11,5 +11,19 @@ int main(){
 
     // Facciamo la visita
     alberoRB->inOrderTraversal(alberoRB->getRoot());
+    std::cout<<std::endl;
+    
+    alberoRB->deleteNode(alberoRB->getRoot());
+    
+    alberoRB->inOrderTraversal(alberoRB->getRoot());
+    std::cout<<std::endl;
+
+    Node<int>* maximum = alberoRB->getMaximum(alberoRB->getRoot());
+
+    //Cancellazione dle massimo
+    alberoRB->deleteNode(maximum);
+
+    alberoRB->inOrderTraversal(alberoRB->getRoot());
+    std::cout<<std::endl;
 
 }

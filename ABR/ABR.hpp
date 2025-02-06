@@ -15,7 +15,6 @@ TEMPLATE class ABR{
         NodeType* predecessor(NodeType* parentNode);
         NodeType* successor(NodeType* parentNode);
         NodeType* treeSearch(NodeType* root, T key);
-        void transplant(NodeType* exRoot, NodeType* newRoot);
 
 
     public:
@@ -28,7 +27,8 @@ TEMPLATE class ABR{
         NodeType* getMinimum(NodeType* root);
         NodeType* getMaximum(NodeType* root);
         virtual void insertNode(NodeType* nodeToInsert);
-        void deleteNode(NodeType* nodeToDelete);
+        virtual void deleteNode(NodeType* nodeToDelete);
+        void transplant(NodeType* exRoot, NodeType* newRoot);
         void inOrderTraversal(NodeType* root);
         void setRoot(NodeType* newRoot);
 
@@ -209,7 +209,6 @@ TEMPLATE NodeType* ABR<T, NodeType>::predecessor(NodeType* parent){
 
 };
 
-// TODO: Da rivedere la transplant che non l'hai capita
 TEMPLATE void ABR<T, NodeType>::transplant(NodeType* exRoot, NodeType* newRoot){
 
     // Se il padre della vecchia radice e' nullo allora e' la stesa radice dell'albero

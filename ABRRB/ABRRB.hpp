@@ -13,6 +13,8 @@ TEMPLATE class ABRRB : public ABR<T, Node<T>> {
         void rotateLeft(Node<T>* nodeToRotate);
         void rotateRight(Node<T>* nodeToRotate);
         void insertFixup(Node<T>* nodeToInsert);
+        void RBtransplant(Node<T>* u, Node<T>* v);
+        void RBDeleteFixup(Node<T>* nodeToAdjust);
 
     public:
         ABRRB();
@@ -20,7 +22,7 @@ TEMPLATE class ABRRB : public ABR<T, Node<T>> {
         ABRRB(std::vector<T> data) : ABR<T, Node<T>>(data){};
         // Qui puoi aggiungere altre inizializzazioni specifiche di ABRRB
         void insertNode(Node<T>* nodeToInsert) override;  // Usa Node<T> come tipo
-
+        void deleteNode(Node<T>* nodeToDelete) override;
 };
 
 
@@ -228,6 +230,228 @@ TEMPLATE void ABRRB<T, NodeType>::rotateRight(Node<T>* nodeToRotate){
     
     
 };
+
+
+TEMPLATE void ABRRB<T, NodeType>::RBtransplant(Node<T>* startNode, Node<T>* endNode){
+
+
+    if (startNode->getFather() == nullptr){
+        this->setRoot(endNode);
+    } else if (startNode == startNode->getFather()->getLeftChild()){
+        startNode->getFather()->setLeftChild(endNode);
+    } else {
+        startNode->getFather()->setRightChild(endNode);
+    }
+
+    // Mon vi troviamo la condizione di endNode = Nil e l'operazione viene eseguita a prescindere
+    endNode->setFather(startNode->getFather());
+    
+
+};
+
+/*
+
+    La delete e' diversa per necessita' di rispettare le proprieta' degli alberi red and black
+
+*/
+TEMPLATE void ABRRB<T, NodeType>::deleteNode(Node<T>* nodeToDelete){
+
+    // Il nodo y serve a tenere traccia del nodo che viene cancellato
+    Node<T>* y = nodeToDelete;
+    // Ne conserviamo il colore
+    Color yOriginalColor = y->getColor();
+
+    // Eseguiamo operazioni standard per le transplant con l'accezione di memorizzare
+    // Il figlio non nullo del nodo che vogliamo cancellare
+    Node<T>* x = nullptr;
+
+    // Primo caso, figlio sinistro nullo, trapiantiamo il figlio destro
+    if (nodeToDelete->getLeftChild() == nullptr){
+        x = nodeToDelete->getRightChild();
+        this->RBtransplant(nodeToDelete, x);
+    
+    // Secondo caso, figlio destro nullo, trapiantiamo il filgio sinistro
+    } else if (nodeToDelete->getRightChild() == nullptr){
+        x = nodeToDelete->getLeftChild();
+        this->RBtransplant(nodeToDelete, x);
+    
+    // Terzo caso, il nodo ha entrambi i figli e quindi va trovato il successore
+    // Y diventa il successore ed x il suo figlio destro. (In quanto Y e' il successore
+    // e' sprovvisto di figlio sinistro, x non puo' essere altro che il filgio destro,
+    // vengono coperti anche i casi in cui x sia nullo ugualmente)
+    } else {
+
+        // Il colore di y, y ed x adesso cambiano, perche' dobbiamo tenere traccia dellemodifiche 
+        // Che stiamo apportando al successore, in quanto lo stiamo trapiantando
+        y = this->getMinimum(nodeToDelete->getRightChild());
+        x = y->getRightChild();
+        yOriginalColor = y->getColor();
+
+        // Trapianto del successore
+        if (y->getFather() == nodeToDelete) { x->setFather(y); }
+        else {
+            this->RBtransplant(y, x);
+            y->setRightChild(nodeToDelete->getRightChild());
+            y->getRightChild()->setFather(y);
+        }
+
+        this->transplant(nodeToDelete, y);
+        y->setLeftChild(nodeToDelete->getLeftChild());
+        y->getLeftChild()->setFather(y);
+
+        // Y adesso prende il colore del nodo che abbiamo cancellato
+        y->setColor(nodeToDelete->getColor());
+
+
+    }
+    
+    // Alla fine dobbiamo eseguire una fixup sul nodo x. Y non viola alcuna proprieta'
+    // perche' prende il colore del nodo da cancellare nel peggiore dei casi, e quindi rimane la stabilita'
+    // definita all'inizio, al contrario il figlio X ora potrebbe star violando qualche proprieta'
+    // e ritrovarci con nodi neri mancanti nel percorso oppure due nodi rossi consecutivi
+
+    if (yOriginalColor == BLACK) this->RBDeleteFixup(x);    
+
+};
+
+
+
+TEMPLATE void ABRRB<T, NodeType>::RBDeleteFixup(Node<T>* node){
+
+    Node<T>* nodeToAdjust = node;
+    // Fin quando il nodo da riparare e' nero ed e' diverso dalla radice eseguiamo
+    // la fixup sul nodo
+    while (nodeToAdjust->getColor() == BLACK && nodeToAdjust != this->getRoot()){
+        // Se il nodo e' un figlio sinistro vengono eseguite le istruzioni per la sinistra
+        if (nodeToAdjust->getFather()->getLeftChild() == nodeToAdjust){
+            
+            // Il fratello del nodo, dobbiamo osservare lui per eseguire le operazioni
+            Node<T>* brother = nodeToAdjust->getFather()->getRightChild();
+            Node<T>* father = brother->getFather();
+            
+            // Ci sono ora tre casi, il fratello e' rosso con figli neri
+            // Il fratello e' nero con i figli neri (un nero di troppo)
+            // Il fratello e' nero con un figlio rosso
+            
+            // Caso 1, il fratello diventa nero, il padre rosso ed eseguiamo una left 
+            // rotate sul padre, andando poi a settare il fratello come il nuovo figlio destro
+            // del padre
+            if (brother->getColor() == RED){
+                brother->setColor(BLACK);
+                father->setColor(RED);
+                this->rotateLeft(father);
+                brother = nodeToAdjust->getFather()->getRightChild();
+            }
+
+            // Ricadiamo ora sicuramente in uno dei casi sottostanti in quanto il fratello e' nero
+            
+            //Caso 2, il colore del fratello diventa rosso ed il nodo da aggiustare diventa ora il padre
+            if (brother->getLeftChild()->getColor() == BLACK && brother->getRightChild()->getColor() == BLACK){
+                brother->setColor(RED);
+                nodeToAdjust = brother->getFather();
+            
+            // Caso 3 uno dei figli non e' nero
+            } else {
+
+                // Se il figlio rosso e' quello sinistro effettuiamo delle operazioni preliminari
+                // relative al bilanciamento
+                if (brother->getLeftChild()->getColor() == RED){
+                    // Il colore del fratello, diventa rosso, il figlio nero,
+                    // effettuiamo una rotazione a destra e settiamo il nuovo fratello del nodo
+                    brother->setColor(RED);
+                    brother->getLeftChild()->setColor(BLACK);
+                    this->rotateRight(brother);
+                    brother = nodeToAdjust->getFather()->getRightChild();
+                }
+
+                // Sicuramente siamo finiti nel caso limite 4, in cui il fratello e' nero
+                // con il filgio destro rosso. Le operazioni che facciamo sono le seguenti:
+                
+                // Il colore del fratello diventa quello del padre
+                // Il colore del padre diventa Nero
+                // Il colore del figlio destro del fratello diventa nero
+                // Ruotiamo l'albero a sinistra rispeto al padre
+                // Settiamo il nodo da aggiustare come la radice dell'albero
+
+                brother->setColor(father->getColor());
+                father->setColor(BLACK);
+                brother->getRightChild()->setColor(BLACK);
+                this->rotateLeft(father);
+                nodeToAdjust = this->getRoot();
+                
+            }
+    
+        // Caso in cui il nodo da aggiustare sia un figlio destro
+        } else {
+            
+            // Il fratello del nodo, dobbiamo osservare lui per eseguire le operazioni
+            Node<T>* brother = nodeToAdjust->getFather()->getLeftChild();
+            Node<T>* father = brother->getFather();
+            
+            // Ci sono ora tre casi, il fratello e' rosso con figli neri
+            // Il fratello e' nero con i figli neri (un nero di troppo)
+            // Il fratello e' nero con un figlio rosso
+            
+            // Caso 1, il fratello diventa nero, il padre rosso ed eseguiamo una right 
+            // rotate sul padre, andando poi a settare il fratello come il nuovo figlio sinistro
+            // del padre
+            if (brother->getColor() == RED){
+                brother->setColor(BLACK);
+                father->setColor(RED);
+                this->rotateRight(father);
+                brother = nodeToAdjust->getFather()->getLeftChild();
+            }
+
+            // Ricadiamo ora sicuramente in uno dei casi sottostanti in quanto il fratello e' nero
+            
+            //Caso 2, il colore del fratello diventa rosso ed il nodo da aggiustare diventa ora il padre
+            if (brother->getLeftChild()->getColor() == BLACK && brother->getRightChild()->getColor() == BLACK){
+                brother->setColor(RED);
+                nodeToAdjust = brother->getFather();
+            
+            // Caso 3 uno dei figli non e' nero
+            } else {
+
+                // Se il figlio rosso e' quello sinistro effettuiamo delle operazioni preliminari
+                // relative al bilanciamento
+                if (brother->getRightChild()->getColor() == RED){
+                    // Il colore del fratello, diventa rosso, il figlio nero,
+                    // effettuiamo una rotazione a destra e settiamo il nuovo fratello del nodo
+                    brother->setColor(RED);
+                    brother->getRightChild()->setColor(BLACK);
+                    this->rotateLeft(brother);
+                    brother = nodeToAdjust->getFather()->getLeftChild();
+                }
+
+                // Sicuramente siamo finiti nel caso limite 4, in cui il fratello e' nero
+                // con il filgio destro rosso. Le operazioni che facciamo sono le seguenti:
+                
+                // Il colore del fratello diventa quello del padre
+                // Il colore del padre diventa Nero
+                // Il colore del figlio destro del fratello diventa nero
+                // Ruotiamo l'albero a sinistra rispeto al padre
+                // Settiamo il nodo da aggiustare come la radice dell'albero
+
+                brother->setColor(father->getColor());
+                father->setColor(BLACK);
+                brother->getLeftChild()->setColor(BLACK);
+                this->rotateRight(father);
+                nodeToAdjust = this->getRoot();
+                
+            }
+    
+        }
+    
+    }
+    
+    // Alla fine di tutto andiamo a settare il colore del nodo da aggiustare a nero, ripristinando tutte
+    // Le proprieta' dell'albero
+
+    nodeToAdjust->setColor(BLACK);
+
+};
+
+
 
 
 #endif // ABRRB_H

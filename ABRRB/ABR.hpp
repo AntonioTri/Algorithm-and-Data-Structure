@@ -16,7 +16,6 @@ TEMPLATE class ABR{
         Node<T>* predecessor(Node<T>* parentNode);
         Node<T>* successor(Node<T>* parentNode);
         Node<T>* treeSearch(Node<T>* root, T key);
-        void transplant(Node<T>* exRoot, Node<T>* newRoot);
 
 
     public:
@@ -31,6 +30,7 @@ TEMPLATE class ABR{
         void insertNode(Node<T>* nodeToInsert);
         void deleteNode(Node<T>* nodeToDelete);
         void inOrderTraversal(Node<T>* root);
+        void transplant(Node<T>* exRoot, Node<T>* newRoot);
 
 };
 
