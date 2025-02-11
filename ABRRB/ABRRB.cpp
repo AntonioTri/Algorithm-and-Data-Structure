@@ -23,6 +23,16 @@ int main(){
     //Cancellazione dle massimo
     alberoRB->deleteNode(maximum);
 
+
+    alberoRB->inOrderTraversal(alberoRB->getRoot());
+    std::cout<<std::endl;
+
+    Node<int>* quarantasei = alberoRB->search(46);
+    
+    //Cancellazione di 46
+    alberoRB->deleteNode(quarantasei);
+
+
     alberoRB->inOrderTraversal(alberoRB->getRoot());
     std::cout<<std::endl;
 
