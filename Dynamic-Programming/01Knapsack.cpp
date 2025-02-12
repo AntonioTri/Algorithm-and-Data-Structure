@@ -39,7 +39,6 @@ int main(){
     // Se l'oggetto e' uguale ad uno, altrimenti proseguiamo
     int sumTot = 0;
     for (int i = 0; i < values.size() ; i++){
-        cout<<objectToTake[i]<<" : "<<values[i]<<endl;
         if (objectToTake[i] == 1) sumTot += values[i];
     }
 
@@ -104,7 +103,7 @@ vector<int> findObjectToTake(const vector<vector<int>> &matrixValue, vector<int>
 
     // Eseguiamo un while per partire dalla fine della matrice
     while (row > 0 && column > 0){
-        
+
         // Se il valore dell'attuale cella e' diverso dalla cella sovrastante
         // l'oggetto e' stato preso, scaliamo le colonne e le righe per riferirci
         // all'oggeto preso recedentemente con il peso aggiornato
