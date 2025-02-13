@@ -33,6 +33,9 @@ class Node {
         Node(int key);
         virtual ~Node() {}; // Distruttore virtuale per abilitare RTTI
 
+        // Valore usato per la link per gli MST
+        int rank = 0;
+
         // Getter
         int getKey();
         std::list<Node*> getAdjList();

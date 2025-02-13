@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// Enumerazione per definire il tipo di grafo
+
 enum GraphType { ORIENTED, NOT_ORIENTED };
 
 class Graph{
@@ -17,15 +19,28 @@ class Graph{
         int globalTime; // Variabile usata dsolo durante la DFS
         GraphType type;
         vector<Node*> vertexes;
-        vector<pair<Node*, Node*>> edges;
+        vector<pair<Node*, Node*>> orderedEdges;
+        vector<pair<Node*, Node*>> unorderedEdges;
         void buildOrientedGraph(vector<Node*> vertexes);
         void buildNotOrientedGraph(vector<Node*> vertexes);
         void DFSVisit(NodeDFS* root);
+        void makeSet(Node* x);
+        Node* findSet(Node* x);
+        void link(Node* x, Node* y);
+        void unionNode(Node* x, Node* y);
+
+
     public:
+
         Graph(vector<Node*> vertexes, GraphType type);
         void printGraph();
         void BFS(NodeBFS* root);
         void DFS(NodeDFS* root);
+        void stronglyConnectedComponents();
+        Node* kruskalMST(NodeDFS* root);
+        Node* primmMST(NodeDFS* root);
+        Node* djikstraMinimumPath(NodeDFS* root);
+
 
 };
 
@@ -112,6 +127,10 @@ void Graph::buildOrientedGraph(vector<Node*> vertexes){
             if (!vertex->isNodeAdjacent(adjVertex)){
                 // Inserimento nella lista di adiacenza
                 vertex->addToAdjList(adjVertex);
+                // Viene aggiunto l'arco
+                pair<Node*, Node*> edge = make_pair(vertex, adjVertex);
+                this->orderedEdges.push_back(edge);
+
             }
 
         }
@@ -176,7 +195,11 @@ void Graph::buildNotOrientedGraph(vector<Node*> vertexes){
                 // Inserimento nella lista di adiacenza
                 vertex->addToAdjList(adjVertex);
                 // Inserimento nella lista di adiacenza del nodo associato
-                adjVertex->addToAdjList(vertex); 
+                adjVertex->addToAdjList(vertex);
+                // Viene aggiunto l'arco da un lato e dall'altro
+                pair<Node*, Node*> edge = make_pair(vertex, adjVertex);
+                this->unorderedEdges.push_back(edge);
+                
             }
 
         }
@@ -353,6 +376,50 @@ void Graph::DFSVisit(NodeDFS* root){
     cout<<"Nodo "<< root->getKey()<<" con tempo di inizio "<<root->getStartingTime()<<" e tempo di fine "<<root->getFinalTime()<<endl;
 
 }
+
+void Graph::stronglyConnectedComponents(){
+
+};
+
+Node* Graph::kruskalMST(NodeDFS* root = nullptr){
+
+};
+
+Node* Graph::primmMST(NodeDFS* root = nullptr){
+
+};
+
+Node* Graph::djikstraMinimumPath(NodeDFS* root = nullptr){
+
+};
+
+void Graph::makeSet(Node* x){
+    x->setFather(x);
+};
+
+Node* Graph::findSet(Node* x){
+
+    while (x->getFather() != x) x = x->getFather();
+    return x;
+
+};
+
+void Graph::link(Node*x, Node* y){
+    
+    if (x->rank > y->rank){
+        y->setFather(x);
+    
+    } else {
+        x->setFather(y);
+        if (x->rank == y->rank) y->rank += 1;
+    
+    }
+    
+};
+
+void Graph::unionNode(Node*x, Node* y){
+    this->link(this->findSet(x), this->findSet(y));
+};
 
 
 void Graph::printGraph(){

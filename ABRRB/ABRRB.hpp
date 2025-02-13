@@ -107,7 +107,7 @@ TEMPLATE void ABRRB<T, NodeType>::insertFixup(Node<T>* nodeToInsert){
                 // Il nono rosso
                 x->getFather()->getFather()->setColor(RED);
                 // Tutto viene ruotato alla base del nonno
-                this->rotateLeft(x->getFather()->getFather());
+                this->rotateRight(x->getFather()->getFather());
 
             }
 
@@ -144,7 +144,7 @@ TEMPLATE void ABRRB<T, NodeType>::insertFixup(Node<T>* nodeToInsert){
                 // Il nono rosso
                 x->getFather()->getFather()->setColor(RED);
                 // Tutto viene ruotato alla base del nonno
-                this->rotateRight(x->getFather()->getFather());
+                this->rotateLeft(x->getFather()->getFather());
 
             }
         }
@@ -288,8 +288,10 @@ TEMPLATE void ABRRB<T, NodeType>::deleteNode(Node<T>* nodeToDelete){
         yOriginalColor = y->getColor();
 
         // Trapianto del successore
-        if (y->getFather() == nodeToDelete) { x->setFather(y); }
-        else {
+        if (y->getFather() == nodeToDelete) { 
+            x->setFather(y); 
+
+        } else {
             this->RBtransplant(y, x);
             y->setRightChild(nodeToDelete->getRightChild());
             y->getRightChild()->setFather(y);
