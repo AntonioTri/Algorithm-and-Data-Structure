@@ -19,27 +19,32 @@ class Graph{
         int globalTime; // Variabile usata dsolo durante la DFS
         GraphType type;
         vector<Node*> vertexes;
+        vector<pair<pair<Node*, Node*>, int>> weightedEdges;
         vector<pair<Node*, Node*>> orderedEdges;
         vector<pair<Node*, Node*>> unorderedEdges;
         void buildOrientedGraph(vector<Node*> vertexes);
         void buildNotOrientedGraph(vector<Node*> vertexes);
         void DFSVisit(NodeDFS* root);
-        void makeSet(Node* x);
+        void relax(NodeBFS* x, NodeBFS* y, int weight);
         Node* findSet(Node* x);
-        void link(Node* x, Node* y);
+        void makeSet(Node* x);
         void unionNode(Node* x, Node* y);
+        void link(Node* x, Node* y);
 
 
     public:
 
         Graph(vector<Node*> vertexes, GraphType type);
         void printGraph();
+        void printEdges();
+        void printWeightedEdges();
         void BFS(NodeBFS* root);
         void DFS(NodeDFS* root);
         void stronglyConnectedComponents();
-        Node* kruskalMST(NodeDFS* root);
-        Node* primmMST(NodeDFS* root);
-        Node* djikstraMinimumPath(NodeDFS* root);
+        void addRandomWeightToEdges();
+        Node* kruskalMST(NodeBFS* root);
+        Node* primmMST(NodeBFS* root);
+        NodeBFS* djikstraMinimumPath(NodeBFS* root);
 
 
 };
@@ -104,6 +109,9 @@ void Graph::buildOrientedGraph(vector<Node*> vertexes){
 
             // Viene aggiunto il nodo scelto alla lista di adiacenza
             vertex->addToAdjList(adjVertex);
+            // Viene aggiunto l'arco
+            pair<Node*, Node*> edge = make_pair(vertex, adjVertex);
+            this->orderedEdges.push_back(edge);
             
         }
     }
@@ -175,6 +183,11 @@ void Graph::buildNotOrientedGraph(vector<Node*> vertexes){
             // Dato che il grafo qui non e' orientato 
             // definiamo la lista di adiacenza anche del nodo aggiunto
             adjVertex->addToAdjList(vertex);
+            // Viene aggiunto l'arco da un lato e dall'altro
+            pair<Node*, Node*> edge1 = make_pair(vertex, adjVertex);
+            this->unorderedEdges.push_back(edge1);
+            pair<Node*, Node*> edge2 = make_pair(adjVertex, vertex);
+            this->unorderedEdges.push_back(edge2);
         }
     }
     
@@ -197,8 +210,10 @@ void Graph::buildNotOrientedGraph(vector<Node*> vertexes){
                 // Inserimento nella lista di adiacenza del nodo associato
                 adjVertex->addToAdjList(vertex);
                 // Viene aggiunto l'arco da un lato e dall'altro
-                pair<Node*, Node*> edge = make_pair(vertex, adjVertex);
-                this->unorderedEdges.push_back(edge);
+                pair<Node*, Node*> edge1 = make_pair(vertex, adjVertex);
+                this->unorderedEdges.push_back(edge1);
+                pair<Node*, Node*> edge2 = make_pair(adjVertex, vertex);
+                this->unorderedEdges.push_back(edge2);
                 
             }
 
@@ -252,6 +267,7 @@ void Graph::BFS(NodeBFS* root = nullptr){
     // Dichiariamo una coda e vi inseriamo la radice
     queue<NodeBFS*> coda;
     coda.push(root);
+    
 
     // Visita della radice
     cout<<"Visita BFS:\n\nNodo "<<root->getKey()<<" con distanza "<< root->getDistance()<<endl;
@@ -377,20 +393,118 @@ void Graph::DFSVisit(NodeDFS* root){
 
 }
 
+void Graph::addRandomWeightToEdges(){
+
+    // Tipo orientato
+    if (this->type == ORIENTED){
+        // Scorriamo gli elementi del vettore di archi di tipo orientato
+        for (auto &arch : this->orderedEdges){
+            this->weightedEdges.push_back(make_pair(arch, rand()%10));
+        }
+    
+    // Tipo non orientato
+    } else {
+        // Scorriamo gli elementi del vettore di archi di tipo non orientato
+        for (auto &arch : this->unorderedEdges){
+            this->weightedEdges.push_back(make_pair(arch, rand()%10));
+        }
+
+    }
+
+    // Alla fine il vettore viene ordinato
+    sort(weightedEdges.begin(), weightedEdges.end(), 
+         [](const pair<pair<Node*, Node*>, int>& a, 
+            const pair<pair<Node*, Node*>, int>& b) {
+            return a.second < b.second; 
+            });
+
+};
+
 void Graph::stronglyConnectedComponents(){
 
 };
 
-Node* Graph::kruskalMST(NodeDFS* root = nullptr){
+Node* Graph::kruskalMST(NodeBFS* root = nullptr){
+    // Crea i set
+    for (auto &x : this->weightedEdges){
+        this->makeSet(x.first.first);
+        this->makeSet(x.first.second);
+    }
+    
+    // Gli archi sono ordinati per peso dall'inizio
+
+    // Estrai un arco
+    for (auto &arch : this->weightedEdges){
+        // Estrai i due nodi
+        Node* node1 = arch.first.first;
+        Node* node2 = arch.first.second;
+
+        // Controlla che abbiano rappresentanti differenti
+        if (findSet(node1) != findSet(node2)){
+            // Se li hanno unisci i due nodi per rango
+            link(findSet(node1), findSet(node2));
+        }
+    }
+    
+    // Viene ritornato il rappresentante dell'MST
+    return findSet(this->weightedEdges.at(0).first.first);
 
 };
 
-Node* Graph::primmMST(NodeDFS* root = nullptr){
-
+Node* Graph::primmMST(NodeBFS* root = nullptr){
+    return new Node();
 };
 
-Node* Graph::djikstraMinimumPath(NodeDFS* root = nullptr){
+NodeBFS* Graph::djikstraMinimumPath(NodeBFS* root) {
+    
+    // Inizializza le distanze per tutti i nodi
+    for (auto node : vertexes) {
+        NodeBFS* bfsNode = static_cast<NodeBFS*>(node);
+        bfsNode->setDistance(INT_MAX);
+        bfsNode->setFather(nullptr);
+    }
+    
+    // Distanza del nodo sorgente impostata a 0
+    root->setDistance(0);
+    
+    // Priority queue per selezionare il nodo con distanza minore
+    using NodeDist = pair<int, NodeBFS*>;
+    priority_queue<NodeDist, vector<NodeDist>, greater<NodeDist>> pq;
+    
+    pq.push({0, root});
+    
+    while (!pq.empty()) {
+        NodeBFS* u = pq.top().second;
+        pq.pop();
+        
+        // Esplora tutti i vicini di u
+        for (const auto& edge : weightedEdges) {
+            if (edge.first.first == u) { // Consideriamo solo gli archi usciti da u
+                NodeBFS* v = static_cast<NodeBFS*>(edge.first.second);
+                int weight = edge.second;
+                
+                // Se troviamo un percorso più breve per v, aggiorniamo la distanza
+                this->relax(u, v, weight);
+                pq.push({v->getDistance(), v});
+                
+            }
+        }
+    }
 
+    return root;
+    
+};
+
+void Graph::relax(NodeBFS* u, NodeBFS* v, int weight){
+    
+    // Se la distanza di v e' maggiore della distanza del padre piu'
+    // il peso dell'arco, allora abbiamo trovato un nuovo cammino minimo
+    if (v->getDistance() > u->getDistance() + weight){
+        // Lo andiamo a settare
+        v->setDistance(u->getDistance() + weight);
+        v->setFather(u);
+    }
+    
 };
 
 void Graph::makeSet(Node* x){
@@ -405,7 +519,7 @@ Node* Graph::findSet(Node* x){
 };
 
 void Graph::link(Node*x, Node* y){
-    
+
     if (x->rank > y->rank){
         y->setFather(x);
     
@@ -431,3 +545,55 @@ void Graph::printGraph(){
     cout<<endl;
 
 }
+
+
+void Graph::printEdges(){
+
+    // Check per controllare se il grafo abbia dei vertici
+    if (this->vertexes.size() ==0){
+        cout<<"Il grafo non ha vertici e archi.\n\n";
+        return;
+    }
+    
+    // Print per il caso oriented
+    if (this->type == ORIENTED){
+        for (auto &edge : this->orderedEdges){ 
+            cout<<"( "<<edge.first->getKey()<<", "<<edge.second->getKey()<<" )\n"; 
+        }
+        cout<<endl;
+
+    // Print per il caso non oriented
+    } else {
+        for (auto &edge : this->unorderedEdges){ 
+            cout<<"( "<<edge.first->getKey()<<", "<<edge.second->getKey()<<" )\n"; 
+        }
+        cout<<endl;
+    }
+
+};
+
+
+void Graph::printWeightedEdges(){
+
+    // Check per controllare se il grafo abbia dei vertici
+    if (this->vertexes.size() ==0){
+        cout<<"Il grafo non ha vertici e archi.\n\n";
+        return;
+    }
+    
+    // Print per il caso oriented
+    if (this->type == ORIENTED){
+        for (auto &edge : this->weightedEdges){ 
+            cout<<"( "<<edge.first.first->getKey()<<", "<<edge.first.second->getKey()<<" ) "<<"w = "<<edge.second<<"\n"; 
+        } 
+        cout<<endl;
+
+    // Print per il caso non oriented
+    } else {
+        for (auto &edge : this->weightedEdges){ 
+            cout<<"( "<<edge.first.first->getKey()<<", "<<edge.first.second->getKey()<<" ) "<<"w = "<<edge.second<<"\n"; 
+        }
+        cout<<endl;
+    }
+
+};

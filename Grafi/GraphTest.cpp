@@ -19,6 +19,10 @@ int main(){
 
     // Print del grafo
     grafo1.printGraph();
+    // Generiamo i pesi degli archi
+    grafo1.addRandomWeightToEdges();
+    // Printiamo gli archi con i pesi
+    grafo1.printWeightedEdges();
 
     // Visita DFS non permessa
     grafo1.DFS();
@@ -45,6 +49,7 @@ int main(){
 
     // Print del grafo
     grafo2.printGraph();
+    grafo2.printEdges();
 
     // Visita DFS permessa
     grafo2.DFS(vertexesDFS[0]);
