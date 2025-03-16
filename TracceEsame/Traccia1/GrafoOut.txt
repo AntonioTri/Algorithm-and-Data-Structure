@@ -1,0 +1,10 @@
+Nodo sorgente 1
+Nodo 2. Distanza da s = 1. Padre con chiave = 1.
+Nodo 3. Distanza da s = 1. Padre con chiave = 1.
+Nodo 5. Distanza da s = 1. Padre con chiave = 1.
+Nodo 4. Distanza da s = 2. Padre con chiave = 2.
+Nodo 6. Distanza da s = 2. Padre con chiave = 2.
+Nodo 7. Distanza da s = 2. Padre con chiave = 3.
+Nodo 9. Distanza da s = 2. Padre con chiave = 5.
+Nodo 8. Distanza da s = 3. Padre con chiave = 4.
+Nodo 10. Distanza da s = 3. Padre con chiave = 6.

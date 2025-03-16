@@ -1,0 +1,6 @@
+Contenuto della Hash Table:
+
+Posizione nella tabella = 2. Coppia chiave valore (2, G)
+Posizione nella tabella = 3. Coppia chiave valore (3, !)
+Posizione nella tabella = 4. Coppia chiave valore (4, J)
+Posizione nella tabella = 6. Coppia chiave valore (6, L)

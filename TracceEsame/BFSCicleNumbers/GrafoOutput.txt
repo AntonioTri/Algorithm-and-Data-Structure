@@ -1,0 +1,45 @@
+Nuovo albero DFS trovato:
+Nodo con chiave 7. Tempi di inizio/fine = (5, 6).
+Nodo con chiave 4. Tempi di inizio/fine = (9, 10).
+Nodo con chiave 8. Tempi di inizio/fine = (8, 11).
+Nodo con chiave 6. Tempi di inizio/fine = (7, 12).
+Nodo con chiave 5. Tempi di inizio/fine = (4, 13).
+Nodo con chiave 3. Tempi di inizio/fine = (3, 14).
+Nodo con chiave 2. Tempi di inizio/fine = (2, 15).
+Nodo con chiave 1. Tempi di inizio/fine = (1, 16).
+
+Nuovo albero DFS trovato:
+Nodo con chiave 9. Tempi di inizio/fine = (17, 18).
+
+Nuovo albero DFS trovato:
+Nodo con chiave 10. Tempi di inizio/fine = (19, 20).
+
+
+Classificazione degli archi:
+
+Arco da 1 a 2 è un arco in AVANTI
+Arco da 2 a 3 è un arco in AVANTI
+Arco da 3 a 1 è un arco all'INDIETRO
+Arco da 3 a 5 è un arco in AVANTI
+Arco da 5 a 7 è un arco in AVANTI
+Arco da 7 a 5 è un arco all'INDIETRO
+Arco da 7 a 3 è un arco all'INDIETRO
+Arco da 5 a 6 è un arco in AVANTI
+Arco da 6 a 8 è un arco in AVANTI
+Arco da 8 a 4 è un arco in AVANTI
+Arco da 4 a 1 è un arco all'INDIETRO
+Arco da 4 a 2 è un arco all'INDIETRO
+Arco da 8 a 7 è un arco TRASVERSALE
+Arco da 6 a 2 è un arco all'INDIETRO
+Arco da 6 a 5 è un arco all'INDIETRO
+Arco da 3 a 2 è un arco all'INDIETRO
+Arco da 2 a 3 è un arco TRASVERSALE
+Arco da 2 a 3 è un arco TRASVERSALE
+Arco da 9 a 6 è un arco TRASVERSALE
+Arco da 9 a 2 è un arco TRASVERSALE
+Arco da 10 a 5 è un arco TRASVERSALE
+Arco da 10 a 3 è un arco TRASVERSALE
+Arco da 10 a 4 è un arco TRASVERSALE
+Arco da 10 a 1 è un arco TRASVERSALE
+
+Il numero di cicli presenti nel grafo è uguale a: 8

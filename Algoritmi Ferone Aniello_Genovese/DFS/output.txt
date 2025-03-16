@@ -1,0 +1,5 @@
+Nodo: 1, tempo di scoperta: 1, tempo di completamento: 10
+Nodo: 2, tempo di scoperta: 2, tempo di completamento: 9
+Nodo: 3, tempo di scoperta: 3, tempo di completamento: 8
+Nodo: 4, tempo di scoperta: 4, tempo di completamento: 7
+Nodo: 5, tempo di scoperta: 5, tempo di completamento: 6
