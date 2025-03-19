@@ -1,0 +1,7 @@
+Codifica dell'albero:
+
+Nodo con chiave 25 e valore C. La sua codifica vale: 00
+Nodo con chiave 75 e valore I. La sua codifica vale: 01
+Nodo con chiave 125 e valore A. La sua codifica vale: 10
+Nodo con chiave 160 e valore O. La sua codifica vale: 110
+Nodo con chiave 200 e valore !. La sua codifica vale: 111

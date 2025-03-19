@@ -1,0 +1,11 @@
+Visita preorder:
+
+Nodo con chiave 100 - Valore = *
+Nodo con chiave 50 - Valore = *
+Nodo con chiave 25 - Valore = C
+Nodo con chiave 75 - Valore = I
+Nodo con chiave 150 - Valore = *
+Nodo con chiave 125 - Valore = A
+Nodo con chiave 170 - Valore = *
+Nodo con chiave 160 - Valore = O
+Nodo con chiave 200 - Valore = !
