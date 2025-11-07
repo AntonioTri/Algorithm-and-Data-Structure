@@ -209,16 +209,11 @@ TEMPLATE class Grafo{
 
             root = this->nodes[0];
 
-            cout << "Inizializzazione dei nodi..." << endl;
-
             // Inizializzazione dei nodi
             for (Node<K>* &node : nodes){
                 // Per ogni nodo viene settata la chiave ed il padre
                 node->primmKey = INT_MAX;
                 node->father = nullptr;
-                
-                // Debugging: Mostra i nodi inizializzati
-                cout << "Nodo inizializzato: " << node->key << " con primmKey = " << node->primmKey << endl;
             }
 
             // Viene definita la coda di priorita' minima
@@ -229,26 +224,18 @@ TEMPLATE class Grafo{
             // Aggiungiamo i nodi nella coda di priorità
             for (Node<K>* node : nodes) {
                 minQueue.push(node);
-                // Debugging: Mostra i nodi aggiunti alla coda
-                cout << "Nodo " << node->key << " aggiunto alla coda con primmKey = " << node->primmKey << endl;
             }
 
             // Inizializziamo la sorgente
             root->primmKey = 0;
-            cout << "Sorgente " << root->key << " inizializzata con primmKey = " << root->primmKey << endl;
 
             // Inizia il ciclo di costruzione dell'albero
             while (!minQueue.empty()){
                 // Estraiamo il nodo con minima priorita'
                 Node<K>* currentNode = minQueue.top(); minQueue.pop();
-
-                cout << "\nEstrazione nodo con chiave " << currentNode->key << " da minQueue (primmKey = " << currentNode->primmKey << ")" << endl;
                 
                 // Inseriamo il nodo nel set di nodi visitati
                 nodeSet.insert(currentNode);
-                
-                // Debugging: Mostra lo stato della coda e del set di nodi visitati
-                cout << "Set di nodi visitati: ";
                 for (Node<K>* node : nodeSet) {
                     cout << node->key << " ";
                 }
@@ -258,12 +245,9 @@ TEMPLATE class Grafo{
                 for(Node<K>* &adjNode : currentNode->adjList){
                     // Ogni vicino conserva come chiave il peso dell'arco in entrata
                     int weight = edgesWeights[make_pair(currentNode, adjNode)];
-                    
-                    cout << "Esplorando arco verso " << adjNode->key << " con peso = " << weight << endl;
 
                     // Se il peso è minore della chiave del vicino e il nodo non è ancora stato visitato
                     if (weight < adjNode->primmKey && nodeSet.find(adjNode) == nodeSet.end()){
-                        cout << "Aggiornamento nodo " << adjNode->key << " con nuova primmKey = " << weight << " e padre = " << currentNode->key << endl;
                         
                         // Aggiorniamo la chiave e il padre del nodo
                         adjNode->primmKey = weight;
@@ -274,8 +258,6 @@ TEMPLATE class Grafo{
                     }
                 }
             }
-
-            cout << "Algoritmo di Prim completato." << endl;
 
             return root;
         }
